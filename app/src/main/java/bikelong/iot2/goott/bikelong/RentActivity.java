@@ -45,7 +45,7 @@ public class RentActivity extends AppCompatActivity {
     private double distance=0;
     private double prevLat=0;
     private double prevLng=0;
-    Member member;
+    Member member = Member.getInstance();
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private String startTime;
     private String endTime;
@@ -119,12 +119,9 @@ public class RentActivity extends AppCompatActivity {
 
         getRentalShopList();
 
-        Intent intent = getIntent();
-        member = (Member) intent.getSerializableExtra("member");
-
         mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         // LBS 에 수신기를 등록하는 명령
-        mLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER,7000, 20, mListener);
+        mLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER,5000, 10, mListener);
         FragmentManager manager = getSupportFragmentManager();
         SupportMapFragment fragment = (SupportMapFragment)manager.findFragmentById(R.id.map);
 

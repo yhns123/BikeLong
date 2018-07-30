@@ -19,7 +19,7 @@ public class UserMainActivity extends AppCompatActivity {
 
     private Button mRentBikeButton;
     private TextView userIdTextView;
-    Member member;
+    Member member = Member.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +29,12 @@ public class UserMainActivity extends AppCompatActivity {
         mRentBikeButton = (Button) findViewById(R.id.RentBikeButton);
         userIdTextView = (TextView) findViewById(R.id.userIdTextView);
 
-        //현재 Activity를 호출한 Activity가 전달한 Intent를 반환
-        Intent intent = getIntent();
-        member = (Member) intent.getSerializableExtra("member");
-
         userIdTextView.setText(member.getName() + " 님");
 
         mRentBikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), RentActivity.class);
-                intent.putExtra("member", member);
                 startActivity(intent);
             }
         });

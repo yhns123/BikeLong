@@ -29,7 +29,7 @@ public class SignInActivity extends AppCompatActivity {
     private Button mSignUpButton;
     private EditText mId;
     private EditText mPassword;
-    Member member;
+    Member member = Member.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +94,6 @@ public class SignInActivity extends AppCompatActivity {
                                 public void run() {
                                     finish();
                                     Intent intent = new Intent(SignInActivity.this, UserMainActivity.class);
-                                    intent.putExtra("member", member);
                                     startActivity(intent);
                                 }
                             });
@@ -134,7 +133,8 @@ public class SignInActivity extends AppCompatActivity {
             JsonObject element = je.getAsJsonObject();
             if (element.get("result") == null) {
                 Gson gson = new Gson();
-                member = gson.fromJson(element, Member.class); // JSON 객체 VO 객체로 직접 변환
+                Member.MemberVo memberVo = gson.fromJson(element, Member.MemberVo.class); // JSON 객체 VO 객체로 직접 변환
+                member.fillMemberVo(memberVo);
             } else {
                 return false;
             }
