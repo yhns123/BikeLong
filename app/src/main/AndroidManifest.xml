@@ -65,7 +65,10 @@
         <activity android:name=".UserMainActivity">
 
         </activity>
-        <activity android:name=".RentActivity">
+        <activity android:name=".RentActivity" android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".MyPageActivity">
 
         </activity>
     </application>

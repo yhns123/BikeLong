@@ -42,29 +42,22 @@ public class UserMainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 1, Menu.NONE, "대여 및 반납");
-        menu.add(Menu.NONE, 2, Menu.NONE, "대여소 보기");
-        menu.add(Menu.NONE, 3, Menu.NONE, "활동량 보기");
-        menu.add(Menu.NONE, 4, Menu.NONE, "목표량 설정");
+        getMenuInflater().inflate(R.menu.my_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        switch (item.getItemId()) {
-            case 4 :
+        switch (item.getItemId()){
+            case R.id.menu_rentalshop:
                 intent = new Intent(this, UserMainActivity.class);
                 startActivity(intent);
                 break;
-            case 3 :
-                intent = new Intent(this, UserMainActivity.class);
+            case R.id.menu_activity:
+                intent = new Intent(this, MyPageActivity.class);
                 startActivity(intent);
                 break;
-            case 2 :
-                intent = new Intent(this, UserMainActivity.class);
-                startActivity(intent);
-                break;
-            case 1 :
+            case R.id.menu_goal:
                 intent = new Intent(this, UserMainActivity.class);
                 startActivity(intent);
                 break;

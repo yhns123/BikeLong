@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,6 +42,7 @@ public class RentActivity extends AppCompatActivity {
     private ArrayList<Marker> mMarkers = new ArrayList<>(); // 지도에 표시할 표시 요소 (여러 위치를 표시하려면 List 로 구현)
     private ArrayList<Marker> mRentalshopMakers = new ArrayList<>();
     private List<RentalShop> mRentalShop = new ArrayList<>();
+    private TextView displayDistance;
 
     private double distance=0;
     private double prevLat=0;
@@ -78,8 +80,6 @@ public class RentActivity extends AppCompatActivity {
             insertGpsThread t = new insertGpsThread(lat,lng,2);
             t.start();
 
-            Toast.makeText(getApplicationContext(), "거리 : " + getDistance(prevLat,prevLng,lat,lng), Toast.LENGTH_SHORT).show();
-            Log.e("거리 : ","="+getDistance(prevLat,prevLng,lat,lng));
             distance = distance + getDistance(prevLat,prevLng,lat,lng);
             prevLat = lat;
             prevLng = lng;
@@ -88,6 +88,7 @@ public class RentActivity extends AppCompatActivity {
             LatLng position = new LatLng(lat,lng);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,18));
 
+            displayDistance.setText("총 이동거리\n" + Math.round(distance*100)/100.0 + " M");
             showMarker(position, R.drawable.position);
         }
 
@@ -113,9 +114,10 @@ public class RentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rent);
 
+        displayDistance = findViewById(R.id.displayDistance);
+
         Date startDate = new Date();
         startTime = format.format(startDate);
-        Toast.makeText(getApplicationContext(), startTime, Toast.LENGTH_SHORT).show();
 
         getRentalShopList();
 
@@ -144,12 +146,6 @@ public class RentActivity extends AppCompatActivity {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,18));
 
                 showMarker(position, R.drawable.position);
-
-                int count = 0;
-                for(RentalShop rentalShop : mRentalShop) {
-                    showMarkerRentalShop(mRentalShop, count);
-                    count++;
-                }
             }
         });
     }
@@ -223,7 +219,7 @@ public class RentActivity extends AppCompatActivity {
                         public void run() {
                             //show error message
                             Toast.makeText(getApplicationContext(),
-                                    "success " + responseCode, Toast.LENGTH_SHORT).show();
+                                    "위치 저장", Toast.LENGTH_SHORT).show();
                         }
                     });
                     //processResult(con.getInputStream());
@@ -248,6 +244,7 @@ public class RentActivity extends AppCompatActivity {
     private void getRentalShopList() {
         Thread t = new Thread() {
             public void run() {
+
                 try {
                     String serverUrl = String.format("http://211.197.18.246:8087/bikelong/mobile_rentalShop.action");
 
@@ -267,11 +264,22 @@ public class RentActivity extends AppCompatActivity {
                             }
                         });
                     }
-
-
+                    if(mRentalShop.size() != 0){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int count = 0;
+                                for(RentalShop rentalShop : mRentalShop) {
+                                    showMarkerRentalShop(mRentalShop, count);
+                                    count++;
+                                }
+                            }
+                        });
+                    }
                 } catch (Exception e){
                     System.out.println(e);
                 }
+
             }
         };
         t.start();
@@ -285,10 +293,10 @@ public class RentActivity extends AppCompatActivity {
             InputStreamReader reader = new InputStreamReader(inputStream);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             RentalShop[] rentalShops = gson.fromJson(reader, RentalShop[].class);
-
+            int count=0;
             for(RentalShop rentalShop : rentalShops) {
-
                 mRentalShop.add(rentalShop);
+                count++;
             }
 
         } catch (Exception ex) {
@@ -375,7 +383,7 @@ public class RentActivity extends AppCompatActivity {
                         public void run() {
                             //show error message
                             Toast.makeText(getApplicationContext(),
-                                    "success " + responseCode, Toast.LENGTH_SHORT).show();
+                                    "사용기록 저장 성공", Toast.LENGTH_SHORT).show();
                         }
                     });
                     //processResult(con.getInputStream());
