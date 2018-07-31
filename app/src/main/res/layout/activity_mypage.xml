@@ -18,16 +18,18 @@
             android:layout_width="122dp"
             android:layout_height="53dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/logo_name"
+            android:layout_marginBottom="30dp"
             android:layout_marginTop="100dp"
+            android:contentDescription="@string/logo_name"
             app:srcCompat="@drawable/logo" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:paddingTop="20dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:alpha="0.7"
+            android:background="@color/colorAccent">
 
 
             <TextView
@@ -38,10 +40,9 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
-                android:text="156 분"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
-                android:textSize="30dp"
+                android:textSize="26dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -52,10 +53,9 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
-                android:text="1218 m"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
-                android:textSize="30dp"
+                android:textSize="26dp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -63,8 +63,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:alpha="0.7"
+            android:background="@color/colorAccent">
 
 
             <TextView
@@ -104,9 +106,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:paddingTop="20dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:alpha="0.7"
+            android:background="@color/colorAccent">
 
 
             <TextView
@@ -117,10 +120,9 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
-                android:text="156 분"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
-                android:textSize="30dp"
+                android:textSize="26dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -131,10 +133,9 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_weight="1"
-                android:text="1218 m"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
-                android:textSize="30dp"
+                android:textSize="26dp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -142,8 +143,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:alpha="0.7"
+            android:background="@color/colorAccent">
 
 
             <TextView
@@ -155,8 +158,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_access_time_black_24dp"
-                android:text="이용시간"
+                android:drawableLeft="@drawable/ic_directions_run_black_24dp"
+                android:text="활동량"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20dp"
@@ -171,11 +174,53 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_directions_car_black_24dp"
-                android:text="이동거리"
+                android:drawableLeft="@drawable/ic_call_received_black_24dp"
+                android:text="탄소절감"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+
+            <Button
+                android:id="@+id/day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="하루 활동량"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="일주일 활동량"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="한달 활동량"
+                android:textColor="@color/colorAccent"
                 android:textStyle="bold" />
 
         </LinearLayout>
