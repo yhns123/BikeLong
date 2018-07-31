@@ -58,7 +58,7 @@ public class UserMainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.menu_goal:
-                intent = new Intent(this, UserMainActivity.class);
+                intent = new Intent(this, MapWithLBSActivity.class);
                 startActivity(intent);
                 break;
         }
