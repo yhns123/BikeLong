@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class BikeActivity extends AppCompatActivity {
@@ -75,8 +76,10 @@ public class BikeActivity extends AppCompatActivity {
                     mBikeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(BikeActivity.this, MainActivity.class);
-                            startActivity(intent);
+
+                            updateBikeThread t = new updateBikeThread(mBikes.get(position).getBikeNo(),mBikes.get(position).getRentalShopNo());
+                            t.start();
+
                         }
                     });
 
@@ -104,17 +107,15 @@ public class BikeActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e("진입성공", "..");
-                        AlertDialog.Builder builder = new AlertDialog.Builder(BikeActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BikeActivity.this, R.style.MyAlertDialogStyle);
 
                         builder.setIcon(R.mipmap.ic_launcher)
                                 .setTitle("BIKE")
-                                .setMessage("대여할 수 있는 자건거가 없습니다.")
-                                .setPositiveButton("돌아가기", new DialogInterface.OnClickListener() {
+                                .setMessage("대여할 수 있는 자전거가 없습니다.")
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(BikeActivity.this, MapWithLBSActivity.class);
-                                        startActivity(intent);
+                                        finish();
                                     }
                                 });
                         builder.show();
@@ -129,14 +130,51 @@ public class BikeActivity extends AppCompatActivity {
                 }
             });
 
-            //Log.e("dd", mBikes.get(0).getRentalShopName());
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void loadBikeView() {
+    class updateBikeThread extends Thread {
 
+        private int bikeNo;
+        private int rentalShopNo;
+
+
+        public updateBikeThread(int bikeNo, int rentalShopNo){
+            this.bikeNo=bikeNo;
+            this.rentalShopNo=rentalShopNo;
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                String serverUrl = String.format("http://211.197.18.246:8087/bikelong/mobile_updateBikeAndRentalShop.action?bikeNo=%d&rentalShopNo=%d&request=0",bikeNo,rentalShopNo);
+                URL url = new URL(serverUrl);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                final int responseCode = con.getResponseCode();
+                if (responseCode == 200) {  //정상 응답인 경우
+                    finish();
+                    Intent intent = new Intent(BikeActivity.this, RentActivity.class);
+                    intent.putExtra("bikeNo",bikeNo);
+                    intent.putExtra("rentalShopNo",rentalShopNo);
+                    startActivity(intent);
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //show error message
+                            Toast.makeText(getApplicationContext(),
+                                    "error " + responseCode, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
     }
 }

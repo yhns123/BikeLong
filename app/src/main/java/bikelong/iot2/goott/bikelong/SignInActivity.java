@@ -44,6 +44,7 @@ public class SignInActivity extends AppCompatActivity {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 SignInRequestThread t = new SignInRequestThread();
                 t.start();
             }
@@ -82,7 +83,8 @@ public class SignInActivity extends AppCompatActivity {
                //Get 방식
                 URL url = new URL(String.format("http://211.197.18.246:8087/bikelong/account/msignin.action?id="+id+"&password="+password));// URL클래스의 생성자로 주소를 넘겨준다.
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();// 해당 주소의 페이지로 접속을 하고, 단일 HTTP 접속을 하기위해 캐스트한다.
-                con.setRequestMethod("GET");// POST방식으로 요청한다.( 기본값은 GET )
+                con.setRequestMethod("GET");
+
                 int responseCode = con.getResponseCode();
                 if (responseCode == 200) { // 정상 응답일 경우
                         boolean result = processResult(con);
@@ -123,6 +125,7 @@ public class SignInActivity extends AppCompatActivity {
     private boolean processResult(HttpURLConnection conn) {
         boolean result = true;
         try {
+
             //JSON 문자열 -> 객체 트리로 변환하는 변환기 만들기
             InputStream is = conn.getInputStream();
             InputStreamReader reader = new InputStreamReader(is);
@@ -135,6 +138,7 @@ public class SignInActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 Member.MemberVo memberVo = gson.fromJson(element, Member.MemberVo.class); // JSON 객체 VO 객체로 직접 변환
                 member.fillMemberVo(memberVo);
+
             } else {
                 return false;
             }

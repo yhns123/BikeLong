@@ -321,28 +321,31 @@ public class MapWithLBSActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 1, Menu.NONE, "서비스 시작");
-        menu.add(Menu.NONE, 2, Menu.NONE, "서비스 중지");
+        getMenuInflater().inflate(R.menu.my_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = null;
-        switch (item.getItemId()) {
-            case 1:
-
-                //LBS에 수신기를 등록하는 명령
-                mLocationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,       //GPS 정보를 수신해서
-                        5000,       //최소 5초 이상의 시간이 경과하고
-                        10,      //최소 10M 이상의 위치 변경이 발생하면
-                        mListener           //이 수신기에게 알려주세요
-                );
+        Intent intent;
+        switch (item.getItemId()){
+            case R.id.menu_rentalshop:
+                intent = new Intent(this, MapWithLBSActivity.class);
+                intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 break;
-            case 2:
-                //LBS에서 수신기를 제거하는 명령
-                mLocationManager.removeUpdates(mListener);
-
+            case R.id.menu_activity:
+                intent = new Intent(this, MyPageActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_goal:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAlertDialogStyle);
+                builder.setTitle("알림");
+                builder.setMessage("아직 구현중입니다. 빠른시일 내에 찾아뵙겠습니다. ㅠㅠ");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                builder.show();
                 break;
         }
         return super.onOptionsItemSelected(item);

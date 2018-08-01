@@ -1,6 +1,8 @@
 package bikelong.iot2.goott.bikelong;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ public class UserMainActivity extends AppCompatActivity {
     private Button mRentBikeButton;
     private TextView userIdTextView;
     Member member = Member.getInstance();
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,8 @@ public class UserMainActivity extends AppCompatActivity {
         mRentBikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), RentActivity.class);
+
+                intent = new Intent(v.getContext(), MapWithLBSActivity.class);
                 startActivity(intent);
             }
         });
@@ -47,10 +51,9 @@ public class UserMainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()){
             case R.id.menu_rentalshop:
-                intent = new Intent(this, UserMainActivity.class);
+                intent = new Intent(this, MapWithLBSActivity.class);
                 startActivity(intent);
                 break;
             case R.id.menu_activity:
@@ -58,8 +61,14 @@ public class UserMainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.menu_goal:
-                intent = new Intent(this, MapWithLBSActivity.class);
-                startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAlertDialogStyle);
+                builder.setTitle("알림");
+                builder.setMessage("아직 구현중입니다. 빠른시일 내에 찾아뵙겠습니다. ㅠㅠ");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                builder.show();
                 break;
         }
         return super.onOptionsItemSelected(item);

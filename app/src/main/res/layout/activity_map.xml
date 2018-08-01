@@ -22,14 +22,15 @@
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_gravity="left"
+            android:layout_margin="10dp"
             android:layout_weight="1"
             android:alpha="0.7"
             android:background="@color/colorAccent"
-            android:id="@+id/search"
-            android:hint="대여소를 입력해주세요."/>
+            android:hint="  대여소를 입력해주세요." />
 
         <Button
             android:id="@+id/searchBtn"

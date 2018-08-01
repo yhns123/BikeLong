@@ -43,6 +43,8 @@ public class RentActivity extends AppCompatActivity {
     private ArrayList<Marker> mRentalshopMakers = new ArrayList<>();
     private List<RentalShop> mRentalShop = new ArrayList<>();
     private TextView displayDistance;
+    private int bikeNo;
+    private int rentalShopNo;
 
     private double distance=0;
     private double prevLat=0;
@@ -51,6 +53,9 @@ public class RentActivity extends AppCompatActivity {
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private String startTime;
     private String endTime;
+
+    //뒤로가기 막기
+    @Override public void onBackPressed() { }
 
     //2개의 마커 사이의 거리계산 메소드
     public double getDistance(double prevLat, double prevLng, double lat, double lng) {
@@ -114,6 +119,10 @@ public class RentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rent);
 
+        Intent intent = getIntent();
+        bikeNo = intent.getIntExtra("bikeNo",0);
+        rentalShopNo = intent.getIntExtra("rentalShopNo",0);
+
         displayDistance = findViewById(R.id.displayDistance);
 
         Date startDate = new Date();
@@ -148,47 +157,6 @@ public class RentActivity extends AppCompatActivity {
                 showMarker(position, R.drawable.position);
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //menu.add(Menu.NONE, 1, Menu.NONE, "위치 서비스시작");
-        menu.add(Menu.NONE, 2, Menu.NONE, "위치 서비스중지");
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 1:
-
-                //Date startDate = new Date();
-                //startTime = format.format(startDate);
-                //Toast.makeText(getApplicationContext(), startTime, Toast.LENGTH_SHORT).show();
-
-                // LBS 에 수신기를 등록하는 명령
-                //mLocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER,5000, 5, mListener);
-                break;
-            case 2:
-
-                Date endDate = new Date();
-                endTime = format.format(endDate);
-                Toast.makeText(getApplicationContext(), endTime, Toast.LENGTH_SHORT).show();
-
-                // LBS 에서 수신기를 제거하는 명령
-                mLocationManager.removeUpdates(mListener);
-
-                int finalDistance = (int) distance;
-                insertHistoryThread t = new insertHistoryThread(finalDistance, startTime,endTime,2);
-                t.start();
-
-                finish();
-                Intent intent = new Intent(RentActivity.this, UserMainActivity.class);
-                intent.putExtra("member", member);
-                startActivity(intent);
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     class insertGpsThread extends Thread {
@@ -322,8 +290,8 @@ public class RentActivity extends AppCompatActivity {
             options.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon4));
         }
 
-        options.title("이 대여소에 반납하시려면 클릭하세요.");
-        options.snippet("                           '클릭'");
+        options.title(mRentalShop.get(i).getRentalShopNo() + ". " + mRentalShop.get(i).getRentalShopName());
+        options.snippet("이 대여소에 반납을 원하시면 클릭하세요.");
         options.position(rentalShopLocation);
 
         mMarkers.add(mMap.addMarker(options)); //지도에 마커(표시)를 추가    관리용(띄우기)
@@ -335,22 +303,67 @@ public class RentActivity extends AppCompatActivity {
         @Override
         public void onInfoWindowClick(Marker marker) {
 
-//            Date endDate = new Date();
-//            endTime = format.format(endDate);
-//            Toast.makeText(getApplicationContext(), endTime, Toast.LENGTH_SHORT).show();
-//
-//            // LBS 에서 수신기를 제거하는 명령
-//            mLocationManager.removeUpdates(mListener);
-//
-//            insertHistoryThread t = new insertHistoryThread(startTime,endTime,2);
-//            t.start();
-//
-//            finish();
-//            Intent intent = new Intent(RentActivity.this, UserMainActivity.class);
-//            intent.putExtra("member", member);
-//            startActivity(intent);
+            Date endDate = new Date();
+            endTime = format.format(endDate);
+            Toast.makeText(getApplicationContext(), endTime, Toast.LENGTH_SHORT).show();
+
+            // LBS 에서 수신기를 제거하는 명령
+            mLocationManager.removeUpdates(mListener);
+
+            int finalDistance = (int) distance;
+            insertHistoryThread t = new insertHistoryThread(finalDistance, startTime,endTime,2);
+            t.start();
+
+            updateBikeThread t2 = new updateBikeThread(bikeNo,Integer.parseInt(marker.getTitle().substring(0,1)));
+            t2.start();
+
+            finish();
+            Intent intent = new Intent(RentActivity.this, UserMainActivity.class);
+            intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
         }
     };
+
+    class updateBikeThread extends Thread {
+
+        private int bikeNo;
+        private int rentalShopNo;
+
+
+        public updateBikeThread(int bikeNo, int rentalShopNo){
+            this.bikeNo=bikeNo;
+            this.rentalShopNo=rentalShopNo;
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                String serverUrl = String.format("http://211.197.18.246:8087/bikelong/mobile_updateBikeAndRentalShop.action?bikeNo=%d&rentalShopNo=%d&request=1",bikeNo,rentalShopNo);
+                URL url = new URL(serverUrl);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                final int responseCode = con.getResponseCode();
+                if (responseCode == 200) {  //정상 응답인 경우
+                    Toast.makeText(getApplicationContext(),
+                            "반납되었습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //show error message
+                            Toast.makeText(getApplicationContext(),
+                                    "error " + responseCode, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
 
     class insertHistoryThread extends Thread {
 
@@ -386,8 +399,6 @@ public class RentActivity extends AppCompatActivity {
                                     "사용기록 저장 성공", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    //processResult(con.getInputStream());
-                    //processResult1(con.getInputStream());
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override

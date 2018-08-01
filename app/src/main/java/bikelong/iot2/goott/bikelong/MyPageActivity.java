@@ -1,9 +1,13 @@
 package bikelong.iot2.goott.bikelong;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,6 +34,7 @@ public class MyPageActivity extends AppCompatActivity {
     private Button mDay;
     private Button mWeek;
     private Button mMonth;
+    private Intent intent;
 
     private int totalDistance=0;
     private int totalCalorie=0;
@@ -81,6 +86,39 @@ public class MyPageActivity extends AppCompatActivity {
         t.start();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_rentalshop:
+                finish();
+                intent = new Intent(this, MapWithLBSActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_activity:
+                finish();
+                intent = new Intent(this, MyPageActivity.class);
+                intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                break;
+            case R.id.menu_goal:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAlertDialogStyle);
+                builder.setTitle("알림");
+                builder.setMessage("아직 구현중입니다. 빠른시일 내에 찾아뵙겠습니다. ㅠㅠ");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                builder.show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     class selectActivityThread extends Thread {
 
         private int requestType;
@@ -94,7 +132,7 @@ public class MyPageActivity extends AppCompatActivity {
 
             try {
                 String id = member.getId();
-                String serverUrl = String.format("http://172.16.6.23:8087/bikelong/mypage/mactivity.action?requestType=%d&id=%s", requestType, id);
+                String serverUrl = String.format("http://211.197.18.246:8087/bikelong/mypage/mactivity.action?requestType=%d&id=%s", requestType, id);
                 URL url = new URL(serverUrl);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
